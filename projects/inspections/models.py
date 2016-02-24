@@ -16,11 +16,11 @@ class Facility(models.Model):
         return "%s %s" % (self.name, self.city)
 
     class Meta:
-        unique_together = ("name", "type", "address", "city")
+        unique_together = ("name", "facility_type", "address", "city")
 
 @python_2_unicode_compatible
 class Inspections(models.Model):
-    facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
+    facility = models.ForeignKey('Facility', on_delete=models.CASCADE)
     inspection_type = models.CharField(max_length=50)
     inspection_date = models.DateField()
     critical_points = models.IntegerField()
