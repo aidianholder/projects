@@ -2,8 +2,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
+from decimal import *
 
-# Create your models here.
 
 @python_2_unicode_compatible
 class Facility(models.Model):
@@ -15,8 +15,27 @@ class Facility(models.Model):
     def __str__(self):
         return "%s %s" % (self.facility_name, self.city)
 
+    def pass_fail_total(self):
+        all_inspections = self.inspections_set.all()
+        passed = 0
+        failed = 0
+        for event in all_inspections:
+            if event.passed_or_failed == 'passed':
+                passed += 1
+            if event.passed_or_failed == 'failed':
+                failed += 1
+        failed_percent = 100 * (Decimal(failed)/Decimal(failed + passed))
+        passed_percent = Decimal(100) - failed_percent
+        return {'failed': failed, 'passed': passed, 'failed_percent': failed_percent, 'passed_percent': passed_percent}
+
+    def latest_inspection(self):
+        most_recent = self.inspections_set.latest('inspection_date')
+        return most_recent.passed_or_failed
+
     class Meta:
         unique_together = ("facility_name", "facility_type", "address", "city")
+        verbose_name_plural = "Facilities"
+
 
 @python_2_unicode_compatible
 class Inspections(models.Model):
@@ -35,6 +54,10 @@ class Inspections(models.Model):
             return 'failed'
         else:
             return 'passed'
+
+    class Meta:
+        ordering = ['-inspection_date']
+        verbose_name_plural = "Inspections"
 
 
 
