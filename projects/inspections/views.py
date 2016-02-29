@@ -3,7 +3,7 @@ from django.http import HttpResponse
 # Create your views here.
 
 def index(request):
-    return HttpResponse("index page will go here")
+    return HttpResponse("ndex page will go hereindex page will go here")
 
 def city(request):
     return HttpResponse("city view will go here")

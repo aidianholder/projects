@@ -12,7 +12,7 @@ class Facility(models.Model):
     facility_type = models.CharField(max_length=30, blank=True, null=True)
     address = models.CharField(max_length=100, blank=True, null=True)
     city = models.CharField(max_length=25, blank=True, null=True)
-    guid = models.UUIDField(default=uuid.uuid4, unique=True)
+    guid = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True)
 
     def __str__(self):
         return "%s %s" % (self.facility_name, self.city)
@@ -41,7 +41,7 @@ class Facility(models.Model):
 
 @python_2_unicode_compatible
 class Inspections(models.Model):
-    facility_guid = models.ForeignKey('Facility', on_delete=models.CASCADE)
+    facility_guid = models.ForeignKey(Facility, on_delete=models.CASCADE)
     inspection_type = models.CharField(max_length=50)
     inspection_date = models.DateField()
     critical_points = models.IntegerField()
