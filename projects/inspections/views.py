@@ -8,7 +8,7 @@ from .models import Inspections
 
 def index(request):
 
-    return HttpResponse("ndex page will go hereindex page will go here")
+    return HttpResponse("index page will go hereindex page will go here")
 
 def city(request, lookup_city):
     city_facilities = Facility.objects.filter(city=lookup_city)
