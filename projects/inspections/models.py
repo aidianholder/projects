@@ -19,12 +19,12 @@ class Facility(models.Model):
 
     def pass_fail_total(self):
         all_inspections = self.inspections_set.all()
-        passed = 0
-        failed = 0
+        passed = Decimal(0)
+        failed = Decimal(0)
         for event in all_inspections:
-            if event.passed_or_failed == 'passed':
+            if event.passed_or_failed() == 'passed':
                 passed += 1
-            if event.passed_or_failed == 'failed':
+            if event.passed_or_failed() == 'failed':
                 failed += 1
         failed_percent = 100 * (Decimal(failed)/Decimal(failed + passed))
         passed_percent = Decimal(100) - failed_percent
@@ -32,7 +32,7 @@ class Facility(models.Model):
 
     def latest_inspection(self):
         most_recent = self.inspections_set.latest('inspection_date')
-        return most_recent.passed_or_failed
+        return most_recent.passed_or_failed()
 
     class Meta:
         #unique_together = ("facility_name", "facility_type", "address", "city")
@@ -49,7 +49,7 @@ class Inspections(models.Model):
     inspection_details = models.TextField()
 
     def __str__(self):
-        return "%s %s %s" % (self.facility.facility_name, self.inspection_date, self.inspection_type)
+        return "%s %s %s" % (self.facility_guid.facility_name, self.inspection_date, self.inspection_type)
 
     def passed_or_failed(self):
         if int(self.total_points) > 40 or int(self.critical_points) > 35:
