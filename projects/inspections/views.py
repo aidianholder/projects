@@ -1,19 +1,19 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
+
 from .models import Facility
 from .models import Inspections
 
 # Create your views here.
 
 def index(request):
-
-    return HttpResponse("index page will go hereindex page will go here")
+    return HttpResponse("index page will go here index page will go here")
 
 def city(request, lookup_city):
     city_facilities = Facility.objects.filter(city=lookup_city)
-    context = {'facilities': city_facilities}
-    return render(request, 'inspections/city.html')
+    context = {'facilities': city_facilities, 'city': city}
+    return render(request, 'inspections/city.html', context)
 
 def facility(request, facility_uuid):
     restaurant = Facility.objects.get(guid=facility_uuid)
