@@ -7,8 +7,8 @@
 <body>
     <h1>{{ city }}</h1>
     <ul>
-        {% for facility in city_facilities %}
-            <li><a href="{% url 'facility_detail' facility.guid %}">facility.facility_name</a></li>
+        {% for facility in facilities %}
+            <li><a href="{% url 'facility_detail' facility.guid %}">{{ facility.facility_name }}</a></li>
         {% endfor %}
     </ul>
 </body>

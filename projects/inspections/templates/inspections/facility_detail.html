@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>{{ facility.facility_name }}</h1>
+    <ul>
+        <li>{{ facility.facility_type }}</li>
+        <li>{{ facility.address }}</li>
+        <li>{{ facility.city }}</li>
+    </ul>
+    <div>
+        <span>Inspection Record: {{ passed }} passed, {{ failed }} failed </span>
+    </div>
+    <ul>
+        {% for inspection in inspections %}
+        <li><a href="{% url 'inspection_detail' inspection.id %}">{{ inspection.inspection_type }} {{ inspection.inspection_date }} {{ inspection.passed_or_failed }}</a></li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
