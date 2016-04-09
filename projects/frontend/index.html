@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Title</title>
+    <script src="http://www.yh-r.com/scripts/lib/jquery/jquery-2.1.4.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://www.yh-r.com/scripts/lib/bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.11/css/dataTables.bootstrap.min.css"/>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.0.2/css/responsive.bootstrap.min.css"/>
+	<script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/dataTables.bootstrap.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/responsive/2.0.2/js/dataTables.responsive.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/responsive/2.0.2/js/responsive.bootstrap.min.js"></script>
+</head>
+<body>
+<table id="test" class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Address</th>
+            <th>City</th>
+        </tr>
+    </thead>
+
+
+</table>
+<script>
+
+    $(document).ready(function(){
+        $("#test").DataTable({
+            "ajax": {
+                "url": "http://127.0.0.1:8000/inspections/city/1/YAKIMA/",
+                "dataType": "jsonp",
+                "dataSrc":""
+            },
+            "columns": [
+                {
+                "className":      'details-control',
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": ''
+                },
+                {"data":"id"},
+                {"data":"name"},
+                {"data":"type"},
+                {"data":"address"},
+                {"data":"city"}
+            ],
+            "columnDefs":[
+                {
+                    "targets":[0],
+                    "visible": false
+                }
+            ]
+
+
+        })
+
+
+
+
+    })
+
+
+
+</script>
+
+</body>
+</html>
