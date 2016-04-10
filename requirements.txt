@@ -1,0 +1,3 @@
+Django==1.9.2
+django-decorators==0.1.1
+psycopg2==2.6.1
