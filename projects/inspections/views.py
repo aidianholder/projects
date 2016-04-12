@@ -8,6 +8,7 @@ import json
 from .models import Facility
 from .models import Inspections
 
+
 def index(request):
     return HttpResponse("index page will go here index page will go here")
 
@@ -46,7 +47,8 @@ def cityjsonp(request, l_city):
         restaurant["address"] = establishment.address
         restaurant["city"] = establishment.city
         restaurant["id"] = str(establishment.guid)
-        restaurant["latest"] = establishment.latest_inspection().upper()
+        restaurant["latest"] = establishment.latest_inspection().strftime('%m/%d/%Y')
+
         facilities_data.append(restaurant)
     json_data = json.dumps(facilities_data)
     data = '%s(%s)' % (request.GET.get('callback'), json_data)
@@ -63,7 +65,8 @@ def alljsonp(request):
         restaurant["address"] = establishment.address
         restaurant["city"] = establishment.city
         restaurant["id"] = str(establishment.guid)
-        restaurant["latest"] = establishment.latest_inspection().upper()
+        restaurant["latest"] = establishment.latest_inspection().strftime('%m/%d/%Y')
+
         facilities_data.append(restaurant)
     json_data = json.dumps(facilities_data)
     data = '%s(%s)' % (request.GET.get('callback'), json_data)
@@ -78,9 +81,9 @@ def facilityjsonp(request, facility_uuid):
     facility_details["type"] = facility.facility_type
     facility_details["address"] = facility.address
     facility_details["city"] = facility.city
-    pfTotals = facility.pass_fail_total()
-    facility_details["pass"] = int(pfTotals['passed'])
-    facility_details["fail"] = int(pfTotals['failed'])
+    pftotals = facility.pass_fail_total()
+    facility_details["pass"] = int(pftotals['passed'])
+    facility_details["fail"] = int(pftotals['failed'])
     inspections = []
     for inspection in inspections_performed:
         record = dict()

@@ -32,7 +32,7 @@ class Facility(models.Model):
 
     def latest_inspection(self):
         most_recent = self.inspections_set.latest('inspection_date')
-        return most_recent.passed_or_failed()
+        return most_recent.inspection_date
 
     class Meta:
         #unique_together = ("facility_name", "facility_type", "address", "city")

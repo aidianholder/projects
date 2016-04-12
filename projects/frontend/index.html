@@ -5,65 +5,282 @@
 
     <title>Title</title>
     <script src="http://www.yh-r.com/scripts/lib/jquery/jquery-2.1.4.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="http://www.yh-r.com/scripts/lib/bootstrap-3.3.5-dist/css/bootstrap.min.css">
+    <script src="http://www.yh-r.com/scripts/lib/handlebars/handlebars-v4.0.4.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.11/css/dataTables.bootstrap.min.css"/>
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.0.2/css/responsive.bootstrap.min.css"/>
 	<script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
 	<script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/dataTables.bootstrap.min.js"></script>
 	<script type="text/javascript" src="https://cdn.datatables.net/responsive/2.0.2/js/dataTables.responsive.min.js"></script>
 	<script type="text/javascript" src="https://cdn.datatables.net/responsive/2.0.2/js/responsive.bootstrap.min.js"></script>
+
+    <style>
+
+        div.inspection_record {
+            border-top: 1px solid #ddd;
+            padding-top: 1em;
+        }
+
+        th.hide_me, td.hide_me {display:none;}
+
+        td.details-control {
+    background: url('img/select.png') no-repeat center center;
+        }
+
+
+        .pass_fail {
+            text-align: center;
+        }
+
+        td.pass_fail{
+                text-transform: uppercase;
+
+        }
+
+        .facility {
+            font-weight:600;
+        }
+
+        .results-total {
+            font-size: 1.2em;
+            font-weight: 500;
+
+        }
+
+        .passed {
+            color: green;
+
+        }
+        .failed {
+            color: red;
+        }
+
+        .locator-list {
+            text-transform: uppercase;
+            font-size: 0.8em;
+            width: 50%;
+
+        }
+
+        h2.panel-title {
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+
+        .return-to-table{
+            display: block;
+            float: left;
+        }
+
+        .passFailInspection {
+            text-transform: capitalize;
+        }
+
+    </style>
 </head>
 <body>
-<table id="test" class="table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Address</th>
-            <th>City</th>
-        </tr>
-    </thead>
+<!--<div class="container">-->
+      <div class="row">
+
+          <div id="facilities_panel" class="panel panel-default">
+              <div class="panel-heading">
+                <h2 class="panel-title">Health Inspections</h2>
+              </div>
+              <div class="panel-body">
+
+                <table id="facilities" class="table table-hover table-condensed" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th class="hide_me">ID</th>
+                            <th class="all">Name</th>
+                            <th class="min-mobile-l">Latest Inspection</th>
+                            <th class="all"></th>
+                            <th class="min-tablet-l">Type</th>
+                            <th class="min-tablet-p">Address</th>
+                            <th class="min-mobile-l">City</th>
+                            <!--<th class="all"></th>-->
+                        </tr>
+                    </thead>
+
+                </table>
+
+              </div><!--end panel-body-->
+          </div><!--end panel-->
+      </div><!--end row-->
+
+ <!--END TABLE ELEMENTS HTML, BEGIN DETAILS HTM-->
+
+    <div class="row" id="details_row">
+
+    </div><!--end row-->
+
+<!---END DETAIL VIEW HTML, Container is for both elements--->
+<!--</div>--><!---end container-->
+
+<script id="details-template" type="text/x-handlebars-template">
+
+<div class="panel panel-default" id="details_panel">
+          <div class="panel-heading">
+              <div class="row">
+                <div class="col-sm-9">
+                    <h2 class="panel-title">{{facility.name}}</h2>
+                    <ul class="list-inline locator-list">
+                    <li>{{facility.type}}</li>
+                    <li>{{facility.address}}</li>
+                    <li>{{facility.city}}</li>
+                    </ul>
+                </div>
+
+                  <div class="col-sm-3">
+                    <a id="returnToTable" class="btn btn-default btn-lg btn-primary return-to-table" role="button">Back</a>
+                  </div>
+
+              </div>
+          </div>
+
+    <div class="panel-body">
+              <div class="col-sm-12">
 
 
-</table>
+                <ul class="list-inline">
+                    <li><h4>Inspections</h4></li>
+                    <li class="total">Passed: <span class="results-total passed">{{facility.pass}}</span></li>
+                    <li class="total">Failed: <span class="results-total failed">{{facility.fail}}</span></li>
+                </ul>
+              </div>
+
+        {{#inspections}}
+            <div class="col-xs-12 inspection_record">
+                <h4 class="{{pf}} passFailInspection">{{pf}}</h4>
+                <div class="col-sm-6 col-md-3">
+                  <p class="inspection-date">
+                    <strong>Date:</strong> {{date}}
+                  </p>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                  <p class="inspection-type">
+                    <strong>Type:</strong> {{type}}
+                  </p>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                  <p class="critical">
+                    <strong>Critical Points:</strong> {{critical}}
+                  </p>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                  <p class="total">
+                    <strong>Total Points:</strong> {{total}}
+                  </p>
+                </div>
+                <div class="col-xs-12">
+                  <p class="inspection_notes">
+                    <strong>Notes:</strong> {{notes}}
+                  </p>
+                </div>
+              </div><!--end inspection_record div-->
+        {{/inspections}}
+
+    </div><!--end panel body-->
+</div><!--end panel-->
+
+</script>
+
+
 <script>
 
-    $(document).ready(function(){
-        $("#test").DataTable({
+    function buildTable(){
+        $("#facilities").DataTable({
+            "responsive":true,
+            "rowCallback": function( row, data, index ){
+              /*if ( data.latest == "PASSED"){
+                  $("td.pass_fail", row).css("color", "green")
+              }
+              else if ( data.latest == "FAILED"){
+                  $("td.pass_fail", row).css("color", "red")
+              }*/
+                $("a.get-details-btn", row).attr("id", data.id)
+            },
+
             "ajax": {
-                "url": "http://127.0.0.1:8000/inspections/city/1/YAKIMA/",
+                /*"url": "http://45.55.15.117:8000/inspections/json/all/",*/
+                "url": "http://127.0.0.1:8000/inspections/json/all/",
                 "dataType": "jsonp",
                 "dataSrc":""
             },
             "columns": [
                 {
-                "className":      'details-control',
-                "orderable":      false,
-                "data":           null,
-                "defaultContent": ''
+                    "data":"id",
+                    "class": "hide_me"
                 },
-                {"data":"id"},
-                {"data":"name"},
-                {"data":"type"},
-                {"data":"address"},
-                {"data":"city"}
-            ],
-            "columnDefs":[
                 {
-                    "targets":[0],
-                    "visible": false
+                    "data":"name",
+                    "class": "facility"
+                },
+                {
+                    "data": "latest",
+                    "class": "pass_fail"
+                },
+                {
+                "orderable": false,
+                "data": null,
+                "defaultContent": '<a class="btn btn-default btn-xs get-details-btn" role="button">View Details</a>'
+                },
+                {
+                    "data":"type"
+                },
+                {
+                    "data":"address"
+                },
+                {
+                    "data":"city"
                 }
             ]
+        })
+
+        $("#facilities").on('click', '.get-details-btn', getDetails);
+
+        $("#details_row").css("display", "none")
+
+    }
+
+    function hideTable(){
+        $("#facilities_panel").css("display", "none")
+    }
+
+    function showTable(){
+        $("#facilities_panel").css("display", "block");
+        $("#details_row").css("display", "none");
+    }
 
 
+    function getDetails(){
+        console.log(this.id)
+        /*url = "http://45.55.15.117:8000/inspections/json/facility/" + this.id + "/"*/
+        url = "http://127.0.0.1:8000/inspections/json/facility/" + this.id + "/"
+
+        $.ajax({
+            dataType: "jsonp",
+            url: url,
+            success: function(data, status, jqXHR){
+                hideTable()
+                $("#details_row").css("display", "block")
+                var detailsScript = $("#details-template").html();
+                var detailsTemplate = Handlebars.compile(detailsScript);
+                $("#details_row").html(detailsTemplate(data))
+                $("#details_row").on('click', '.return-to-table', showTable)
+
+            }
         })
 
 
+    }
 
 
-    })
+buildTable()
+
 
 
 
