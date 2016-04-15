@@ -26,19 +26,18 @@
 
         th.hide_me, td.hide_me {display:none;}
 
-        td.details-control {
+        /*td.details-control {
     background: url('img/select.png') no-repeat center center;
-        }
+        }*/
 
 
-        .pass_fail {
+        /*.pass_fail {
             text-align: center;
         }
 
         td.pass_fail{
                 text-transform: uppercase;
-
-        }
+        }*/
 
         .facility {
             font-weight:600;
@@ -80,6 +79,22 @@
         }
 
     </style>
+
+    <!-- Google Analytics -->
+   <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-1046893-41', 'auto');
+      ga('send', 'pageview');
+   </script>
+    <!-- End Google Analytics -->
+
+
+
+
 </head>
 <body>
 <!--<div class="container">-->
@@ -144,7 +159,6 @@
     <div class="panel-body">
               <div class="col-sm-12">
 
-
                 <ul class="list-inline">
                     <li><h4>Inspections</h4></li>
                     <li class="total">Passed: <span class="results-total passed">{{facility.pass}}</span></li>
@@ -192,21 +206,25 @@
 <script>
 
     function buildTable(){
+
         $("#facilities").DataTable({
-            "responsive":true,
-            "rowCallback": function( row, data, index ){
+            'responsive':true,
+            'drawCallback': function(){
+                ga('send', 'pageview', 'http://www.yakimaherald.com/facts_and_records/inspections/')
+            },
+            'rowCallback': function( row, data, index ){
               /*if ( data.latest == "PASSED"){
                   $("td.pass_fail", row).css("color", "green")
               }
               else if ( data.latest == "FAILED"){
                   $("td.pass_fail", row).css("color", "red")
               }*/
-                $("a.get-details-btn", row).attr("id", data.id)
+                $('a.get-details-btn', row).attr('id', data.id)
             },
 
             "ajax": {
-                /*"url": "http://45.55.15.117:8000/inspections/json/all/",*/
-                "url": "http://127.0.0.1:8000/inspections/json/all/",
+                "url": "http://projects.yakimaherald.com/inspections/json/all/",
+                /*"url": "http://127.0.0.1:8000/inspections/json/all/",*/
                 "dataType": "jsonp",
                 "dataSrc":""
             },
@@ -238,39 +256,40 @@
                     "data":"city"
                 }
             ]
-        })
+        });
 
-        $("#facilities").on('click', '.get-details-btn', getDetails);
+        $('#facilities').on('click', '.get-details-btn', getDetails);
 
-        $("#details_row").css("display", "none")
+        $('#details_row').css('display', 'none')
 
     }
 
     function hideTable(){
-        $("#facilities_panel").css("display", "none")
+        $("#facilities_panel").css('display', 'none')
     }
 
     function showTable(){
-        $("#facilities_panel").css("display", "block");
-        $("#details_row").css("display", "none");
+        $("#facilities_panel").css('display', 'block');
+        $("#details_row").css('display', 'none');
     }
 
 
     function getDetails(){
-        console.log(this.id)
-        /*url = "http://45.55.15.117:8000/inspections/json/facility/" + this.id + "/"*/
-        url = "http://127.0.0.1:8000/inspections/json/facility/" + this.id + "/"
+        console.log(this.id);
+        var url = 'http://projects.yakimaherald.com/inspections/json/facility/' + this.id + '/';
+        /*url = "http://127.0.0.1:8000/inspections/json/facility/" + this.id + "/"*/
 
         $.ajax({
-            dataType: "jsonp",
+            dataType: 'jsonp',
             url: url,
             success: function(data, status, jqXHR){
-                hideTable()
-                $("#details_row").css("display", "block")
-                var detailsScript = $("#details-template").html();
+                hideTable();
+                var selectedDetails = $('#details_row');
+                selectedDetails.css('display', 'block');
+                var detailsScript = $('#details-template').html();
                 var detailsTemplate = Handlebars.compile(detailsScript);
-                $("#details_row").html(detailsTemplate(data))
-                $("#details_row").on('click', '.return-to-table', showTable)
+                selectedDetails.html(detailsTemplate(data));
+                selectedDetails.on('click', '.return-to-table', showTable)
 
             }
         })
