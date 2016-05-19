@@ -75,5 +75,6 @@ for restaurant in restaurants:
         cur.execute("""INSERT INTO inspections_inspections (inspection_type, inspection_date, critical_points, total_points, inspection_details, facility_guid_id ) VALUES (%(inspection)s, %(inspection_date)s, %(critical)s, %(total)s, %(details)s, %(guid)s)""", restaurant)
         if restaurant['guid'] not in guid_list:
             cur.execute("""INSERT INTO inspections_facility ( facility_name, facility_type, address, city, guid ) VALUES (%(facility_name)s, %(facility_type)s, %(address)s, %(city)s, %(guid)s)""", restaurant)
+            guid_list.append(restaurant['guid'])
         conn.commit()
 

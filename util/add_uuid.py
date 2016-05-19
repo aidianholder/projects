@@ -18,6 +18,8 @@ with open(os.path.expanduser(target)) as csvfile:
     reader = csv.DictReader(csvfile)
     uuid_list = []
     for row in reader:
+        ord = {}
+
         record = {}
         record['facility_name'] = row['name']
         record['facility_type'] = row['type']
