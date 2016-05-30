@@ -8,8 +8,8 @@ from operator import __or__ as OR
 from .models import Calls
 
 
-def incidents(request, callgroups, days):
-    start_day = datetime.datetime.today() - datetime.timedelta(days)
+def incidents(request, callgroups, days="1"):
+    start_day = datetime.datetime.today() - datetime.timedelta(int(days))
     cgn = len(callgroups) / 2
     groups = []
     ls, rs = 0, 2

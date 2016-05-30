@@ -8,10 +8,6 @@ import os
 from django.contrib.gis.geos import GEOSGeometry
 
 
-
-
-
-
 class Command(BaseCommand):
     help = 'downloads calls for service from YPD for yesterday and loads them into database as Calls objects'
 
@@ -30,7 +26,7 @@ class Command(BaseCommand):
         calls_list = json_raw['features']
         feature_count = 0
         call_natures = []
-        property = ['BURGLARY', 'THEFT', 'THEFT-VEHICLE', 'VEHICLE PROWL', 'MAL MISCHIEF', 'RECOVERD STOLEN']
+        propertycrime = ['BURGLARY', 'THEFT', 'THEFT-VEHICLE', 'VEHICLE PROWL', 'MAL MISCHIEF', 'RECOVERD STOLEN']
         violence = ['ASSAULT', 'DEATH INVEST', 'ROBBERY', 'SHOTS FIRED', 'WEAPON OFFENSE']
         accident = ['ACCIDENT HITRUN', 'ACCIDENT INJURY', 'ACCIDENT NO INJ', 'ACCIDENT UNKOW']
         traffic = ['PARKING PROBLEM', 'TRAFFIC HAZARD', 'TRAFFIC OFFENSE', 'TRAFFIC STOP']
@@ -49,7 +45,7 @@ class Command(BaseCommand):
                 c.nature = p['Nature'].strip().upper()
                 if c.nature not in call_natures:
                     call_natures.append(c.nature)
-                if c.nature in property:
+                if c.nature in propertycrime:
                     c.callgroup = 'PR'
                 elif c.nature in violence:
                     c.callgroup = "VI"
@@ -68,11 +64,7 @@ class Command(BaseCommand):
         self.stdout.write('processed {} features'.format(feature_count))
         categoryfilename = datetime.datetime.today().strftime('%m%d%y') + 'categories'
         categoryfile = open(os.path.join(os.path.expanduser('~/Documents/'), categoryfilename), 'w')
-        categoryfile.write(call_natures)
-
-
-#outfile = open('/Users/admin/src/projects/projects/crimemap/data/yday_calls.geojson', 'w')
-#outfile.write(geojson.read())
-#outfile.close()
-
-
+        for cn in call_natures:
+            categoryfile.write(cn)
+            categoryfile.write(str('\n'))
+        categoryfile.close()
