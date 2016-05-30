@@ -1,13 +1,11 @@
-from django.shortcuts import render
 from django.http import HttpResponse
+from django.core.serializers import serialize
 from django.db.models import Q
 
 import datetime
 from operator import __or__ as OR
-import json
 
 from .models import Calls
-
 
 
 def incidents(request, callgroups, days):
@@ -19,7 +17,7 @@ def incidents(request, callgroups, days):
         cg = callgroups[ls:rs]
         groups.append(cg)
         ls = rs
-        rs = rs+2
+        rs += 2
     if len(groups) == 1:
         service_calls = Calls.objects.filter(calldatetime__gte=start_day).filter(callgroup=groups[0])
     elif len(groups) < 1:
@@ -29,6 +27,10 @@ def incidents(request, callgroups, days):
             q = Q(callgroup=group)
             qlist.append(q)
         service_calls = service_calls.filter(reduce(OR, qlist))
+    data = serialize('geojson', service_calls)
+    return HttpResponse(data, content_type='application/json')
+
+
 
 
 
