@@ -10,6 +10,7 @@ class Calls(models.Model):
     callid = models.IntegerField(primary_key=True)
     nature = models.CharField(max_length=16)
     callcategory = models.CharField(max_length=50)
+    callgroup = models.CharField(max_length=2)
     address = models.CharField(max_length=61)
     calldatetime = models.DateTimeField()
     lat = models.DecimalField(max_digits=9, decimal_places=6)

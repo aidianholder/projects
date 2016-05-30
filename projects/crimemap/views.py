@@ -1,7 +1,49 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.db.models import Q
+
+import datetime
+from operator import __or__ as OR
+import json
 
 from .models import Calls
 
-def incidents(request, nature):
+
+
+def incidents(request, callgroups, days):
+    start_day = datetime.datetime.today() - datetime.timedelta(days)
+    cgn = len(callgroups) / 2
+    groups = []
+    ls, rs = 0, 2
+    for i in range(0, cgn):
+        cg = callgroups[ls:rs]
+        groups.append(cg)
+        ls = rs
+        rs = rs+2
+    if len(groups) == 1:
+        service_calls = Calls.objects.filter(calldatetime__gte=start_day).filter(callgroup=groups[0])
+    elif len(groups) < 1:
+        service_calls = Calls.objects.filter(calldatetime_gte=start_day)
+        qlist = []
+        for group in groups:
+            q = Q(callgroup=group)
+            qlist.append(q)
+        service_calls = service_calls.filter(reduce(OR, qlist))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
