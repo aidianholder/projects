@@ -9,7 +9,9 @@ from .models import Calls
 
 
 def incidents(request, callgroups, days="1"):
-    start_day = datetime.datetime.today() - datetime.timedelta(int(days))
+    tday = datetime.datetime.today()
+    y, m, d = tday.year, tday.month, tday.day
+    start_day = datetime.datetime(y, m, d) - datetime.timedelta(int(days))
     cgn = len(callgroups) / 2
     groups = []
     ls, rs = 0, 2
@@ -20,32 +22,12 @@ def incidents(request, callgroups, days="1"):
         rs += 2
     if len(groups) == 1:
         service_calls = Calls.objects.filter(calldatetime__gte=start_day).filter(callgroup=groups[0])
-    elif len(groups) < 1:
-        service_calls = Calls.objects.filter(calldatetime_gte=start_day)
+    elif len(groups) > 1:
+        service_calls = Calls.objects.filter(calldatetime__gte=start_day)
         qlist = []
         for group in groups:
             q = Q(callgroup=group)
             qlist.append(q)
         service_calls = service_calls.filter(reduce(OR, qlist))
-    data = serialize('geojson', service_calls)
+    data = serialize('geojson', service_calls, srid=4326)
     return HttpResponse(data, content_type='application/json')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
