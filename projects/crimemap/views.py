@@ -7,7 +7,6 @@ from operator import __or__ as OR
 
 from .models import Calls
 
-
 def incidents(request, callgroups, days="1"):
     tday = datetime.datetime.today()
     y, m, d = tday.year, tday.month, tday.day
@@ -29,5 +28,15 @@ def incidents(request, callgroups, days="1"):
             q = Q(callgroup=group)
             qlist.append(q)
         service_calls = service_calls.filter(reduce(OR, qlist))
-    data = serialize('geojson', service_calls, srid=4326)
+    json_data = serialize('geojson', service_calls, srid=4326)
+    data = '%s(%s)' % (request.GET.get('callback'), json_data)
+    return HttpResponse(data, content_type='application/json')
+
+
+def date_range(request, startdate, enddate):
+    sd = datetime.date(int(startdate[:4]), int(startdate[4:6]), int(startdate[6:]))
+    ed = datetime.date(int(enddate[:4]), int(enddate[4:6]), int(enddate[6:]))
+    service_calls = Calls.objects.filter(calldatetime__range=(sd, ed))
+    json_data = serialize('geojson', service_calls, srid=4326)
+    data = '%s(%s)' % (request.GET.get('callback'), json_data)
     return HttpResponse(data, content_type='application/json')
