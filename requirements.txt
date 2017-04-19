@@ -1,3 +1,6 @@
+arcgis-rest-query==0.14
 Django==1.9.2
 django-decorators==0.1.1
+gunicorn==19.4.5
 psycopg2==2.6.1
+requests==2.10.0
