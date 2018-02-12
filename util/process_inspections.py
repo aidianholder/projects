@@ -43,6 +43,7 @@ for row in reader:
                 print record
             restaurants.append(record)
         else:
+
             newrecord = record.copy()
             newrecord['inspection_date'] = row['inspection_date'].strip().replace("  ", " ")
             newrecord['inspection'] = row['inspection'].strip().replace("  ", " ")

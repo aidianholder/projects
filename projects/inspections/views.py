@@ -66,7 +66,9 @@ def alljsonp(request):
         restaurant["city"] = establishment.city
         restaurant["id"] = str(establishment.guid)
         restaurant["latest"] = establishment.latest_inspection().strftime('%m/%d/%Y')
-
+	pftotals = establishment.pass_fail_total()
+	restaurant["passed"] = int(pftotals['passed'])
+	restaurant["failed"] = int(pftotals['failed']) 	
         facilities_data.append(restaurant)
     json_data = json.dumps(facilities_data)
     data = '%s(%s)' % (request.GET.get('callback'), json_data)
