@@ -82,8 +82,11 @@ class Command(BaseCommand):
 					c = Calls()
 					c.callid = new_callid
 					if call[4] != ' ':
-						c.lat, c.lon = float(call[4])/1000000, float(call[5])/1000000
-						c.geom = GEOSGeometry('POINT({:.6f} {:.6f})'.format(c.lon, c.lat), srid=4326)
+						try:
+							c.lat, c.lon = float(call[4])/1000000, float(call[5])/1000000
+							c.geom = GEOSGeometry('POINT({:.6f} {:.6f})'.format(c.lon, c.lat), srid=4326)
+						except ValueError:
+							pass
 					if call[2] != ' ':
 						c.nature = call[2].strip().upper()
 					try:
